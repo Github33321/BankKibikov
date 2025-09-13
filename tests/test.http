@@ -1,5 +1,7 @@
 ### healthcheck
 GET http://localhost:8082/ping
+###
+GET http://localhost:8082/moex-stocks
 ### create user
 POST http://localhost:8082/users
 Content-Type: application/json
@@ -16,7 +18,7 @@ POST http://localhost:8082/login
 Content-Type: application/json
 
 {
-  "username": "admin1",
+  "username": "max",
   "password": "12345"
 }
 
@@ -26,8 +28,8 @@ POST http://localhost:8082/verify-otp
 Content-Type: application/json
 
 {
-  "username": "admin1",
-  "otp": "11204645"
+  "username": "max",
+  "otp": "10654755"
 }
 
 
@@ -49,7 +51,7 @@ Content-Type: application/json
 }
 
 ### 3. Баланс  (user_id нужно подставить UUID из ответа на /users или взять из БД)
-GET http://localhost:8082/balance?user_id=dba4e247-b416-41da-a78c-d1087e6445e7
+GET http://localhost:8082/balance?user_id=8953a566-57c6-4dbe-bb18-fdea80310036
 
 
 ### 4. Баланс
@@ -81,3 +83,15 @@ GET http://localhost:8082/transactions?user_id=cdb07b18-8c83-4d3f-9ffd-cf1e90f8e
 
 ### 7. Проверка истории транзакций
 GET http://localhost:8082/transactions?user_id=1135666f-a2b9-4340-94ac-6c8f77d36062
+
+### 8. Микрозаймы
+POST http://localhost:8082/loan
+Content-Type: application/json
+
+{
+  "user_id": "8953a566-57c6-4dbe-bb18-fdea80310036",
+  "amount": 1000
+}
+###
+// Счетчик долгов вывести красиво
+GET http://localhost:8082/loan/f720a209-3bd7-432b-b89b-ba4c94645a19

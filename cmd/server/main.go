@@ -1,19 +1,19 @@
 package main
 
 import (
-	"context"
-	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
-	"time"
-
+	"BankKibikov/internal/chat"
 	"BankKibikov/internal/db"
 	"BankKibikov/internal/handler"
 	"BankKibikov/internal/logger"
 	"BankKibikov/internal/repository"
 	"BankKibikov/internal/security"
 	"BankKibikov/internal/service"
+	"context"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -56,27 +56,45 @@ func main() {
 	}
 	defer log.Sync()
 
+	// БД
 	pool, err := db.NewPool(cfg.Database.DSN)
 	if err != nil {
 		log.Fatal("failed to connect db", zap.Error(err))
 	}
 	defer pool.Close()
 
+	// Репозитории
 	userRepo := repository.NewUserRepository(pool)
 	accountRepo := repository.NewAccountRepository(pool)
 	newsRepo := repository.NewNewsRepository(pool)
 	txRepo := repository.NewTransactionRepository(pool)
+	loanRepo := repository.NewLoanRepository(pool)
 
 	// Сервисы
 	userService := service.NewUserService(userRepo, accountRepo)
 	accountService := service.NewAccountService(accountRepo, txRepo)
+	loanService := service.NewLoanService(loanRepo, accountRepo)
 
 	// Security
 	authService := security.NewAuthService(userRepo)
 
-	// Хендлеры
-	h := handler.NewHandler(log, userService, authService, newsRepo, accountService, "")
+	// Chat hub
+	chatHub := chat.NewHub()
+	go chatHub.Run()
 
+	// Хендлеры
+	h := handler.NewHandler(
+		log,
+		userService,
+		authService,
+		newsRepo,
+		accountService,
+		loanService,
+		chatHub, // ✅ прокидываем чат
+		"",
+	)
+
+	// HTTP сервер
 	r := gin.Default()
 	h.InitRoutes(r)
 

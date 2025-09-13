@@ -1,9 +1,11 @@
 package handler
 
 import (
+	"BankKibikov/internal/chat"
 	"BankKibikov/internal/repository"
 	"BankKibikov/internal/security"
 	"BankKibikov/internal/service"
+
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -14,6 +16,9 @@ type Handler struct {
 	AuthHandler    *AuthHandler
 	NewsHandler    *NewsHandler
 	AccountHandler *AccountHandler
+	StockHandler   *StockHandler
+	LoanHandler    *LoanHandler
+	ChatHandler    *ChatHandler // ✅ добавили чат
 	jwtSecret      string
 }
 
@@ -23,6 +28,8 @@ func NewHandler(
 	authService *security.AuthService,
 	newsRepo *repository.NewsRepository,
 	accountService *service.AccountService,
+	loanService *service.LoanService,
+	chatHub *chat.Hub, // ✅ чат
 	secret string,
 ) *Handler {
 	return &Handler{
@@ -31,12 +38,14 @@ func NewHandler(
 		AuthHandler:    NewAuthHandler(logger, authService),
 		NewsHandler:    NewNewsHandler(logger, newsRepo),
 		AccountHandler: NewAccountHandler(logger, accountService),
+		StockHandler:   NewStockHandler(),
+		LoanHandler:    NewLoanHandler(logger, loanService),
+		ChatHandler:    NewChatHandler(chatHub), // ✅ инициализация
 		jwtSecret:      secret,
 	}
 }
 
 func (h *Handler) InitRoutes(router *gin.Engine) {
-
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{"message": "Bank Kibikov API is running"})
 	})
@@ -47,7 +56,6 @@ func (h *Handler) InitRoutes(router *gin.Engine) {
 
 	secure := router.Group("/")
 	{
-		// для всех авторизованных
 		secure.GET("/balance", h.AccountHandler.GetBalance)
 		secure.POST("/transfer", h.AccountHandler.Transfer)
 		secure.GET("/transactions", h.AccountHandler.GetTransactions)
@@ -56,16 +64,10 @@ func (h *Handler) InitRoutes(router *gin.Engine) {
 		secure.POST("/deposit", security.AdminOnly(), h.AccountHandler.Deposit)
 		secure.POST("/withdraw", security.AdminOnly(), h.AccountHandler.Withdraw)
 	}
-	// новости (public)
+
+	// новости
 	router.GET("/news", h.NewsHandler.GetNews)
 	router.POST("/news", h.NewsHandler.CreateNews)
-
-	//балансы
-	//router.GET("/balance", h.AccountHandler.GetBalance)
-	//router.POST("/transfer", h.AccountHandler.Transfer)
-	//router.GET("/transactions", h.AccountHandler.GetTransactions)
-	//router.POST("/deposit", h.AccountHandler.Deposit)
-	//router.POST("/withdraw", h.AccountHandler.Withdraw)
 
 	// пользователи
 	router.POST("/users", h.UserHandler.CreateUser)
@@ -73,4 +75,15 @@ func (h *Handler) InitRoutes(router *gin.Engine) {
 	router.POST("/verify-otp", h.AuthHandler.VerifyOTP)
 	router.GET("/users/:id", h.UserHandler.GetUserByID)
 	router.GET("/users", h.UserHandler.GetUsers)
+
+	// биржа
+	router.GET("/moex-stocks", h.StockHandler.GetMoexStocks)
+
+	// займы
+	router.POST("/loan", h.LoanHandler.CreateLoan)
+	router.GET("/loan/:id", h.LoanHandler.GetLoan)
+
+	// чат
+	router.StaticFile("/chat", "static/chat.html") // панель чата
+	router.GET("/ws", h.ChatHandler.ServeWs)       // websocket
 }
