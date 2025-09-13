@@ -1,0 +1,7 @@
+server:
+  port: ":8082"
+
+database:
+  dsn: "postgres://bankuser:bankpass@localhost:5432/bankdb?sslmode=disable"
+jwt:
+  secret: "supersecretkey"

@@ -1,0 +1,83 @@
+### healthcheck
+GET http://localhost:8082/ping
+### create user
+POST http://localhost:8082/users
+Content-Type: application/json
+
+{
+  "username": "max",
+  "password": "12345",
+  "email": "bebebe@example.ru"
+}
+
+
+###  Login
+POST http://localhost:8082/login
+Content-Type: application/json
+
+{
+  "username": "admin1",
+  "password": "12345"
+}
+
+
+### Verify OTP
+POST http://localhost:8082/verify-otp
+Content-Type: application/json
+
+{
+  "username": "admin1",
+  "otp": "11204645"
+}
+
+
+### Get all users
+GET http://localhost:8082/users
+
+
+
+### Get news (public)
+GET http://localhost:8082/news
+
+### Create news (пока открытый, потом можно закрыть)
+POST http://localhost:8082/news
+Content-Type: application/json
+
+{
+  "title": "Bank Kibikov запущен",
+  "content": "bebebeNekitLoh!"
+}
+
+### 3. Баланс  (user_id нужно подставить UUID из ответа на /users или взять из БД)
+GET http://localhost:8082/balance?user_id=dba4e247-b416-41da-a78c-d1087e6445e7
+
+
+### 4. Баланс
+GET http://localhost:8082/balance?user_id=cdb07b18-8c83-4d3f-9ffd-cf1e90f8efdd
+
+### Пополнение счёта пользователя
+POST http://localhost:8082/deposit
+role: admin
+Content-Type: application/x-www-form-urlencoded
+
+user_id=f939bab8-aa3f-41cf-b971-0e533d2bdbd2&amount=200.00
+
+### Списание со счёта
+POST http://localhost:8082/withdraw
+Content-Type: application/x-www-form-urlencoded
+
+user_id=1135666f-a2b9-4340-94ac-6c8f77d36062&amount=200.00
+
+### 5. Перевод 100.50
+POST http://localhost:8082/transfer
+Content-Type: application/x-www-form-urlencoded
+
+from_user=1135666f-a2b9-4340-94ac-6c8f77d36062&to_user=cdb07b18-8c83-4d3f-9ffd-cf1e90f8efdd&amount=100.50
+
+
+### 6. Проверка истории транзакций
+GET http://localhost:8082/transactions?user_id=cdb07b18-8c83-4d3f-9ffd-cf1e90f8efdd
+
+
+### 7. Проверка истории транзакций
+GET http://localhost:8082/transactions?user_id=1135666f-a2b9-4340-94ac-6c8f77d36062
