@@ -7,7 +7,7 @@ POST http://localhost:8082/users
 Content-Type: application/json
 
 {
-  "username": "max12",
+  "username": "max",
   "password": "12345",
   "email": "bebeb2e@example.ru"
 }
@@ -55,7 +55,7 @@ GET http://localhost:8082/balance?user_id=8953a566-57c6-4dbe-bb18-fdea80310036
 
 
 ### 4. Баланс
-GET http://localhost:8082/balance?user_id=7994e089-2af2-4f40-994b-e613f82b8b22
+GET http://localhost:8082/balance?user_id=4a2574e5-46e8-4ef8-b558-4bb58207c24a
 
 ### Пополнение счёта пользователя
 POST http://localhost:8082/deposit
@@ -78,7 +78,7 @@ from_user=8953a566-57c6-4dbe-bb18-fdea80310036&to_user=7994e089-2af2-4f40-994b-e
 
 
 ### 6. Проверка истории транзакций
-GET http://localhost:8082/transactions?user_id=8953a566-57c6-4dbe-bb18-fdea80310036
+GET http://localhost:8082/transactions?user_id=4a2574e5-46e8-4ef8-b558-4bb58207c24a
 
 
 ### 7. Проверка истории транзакций
@@ -89,9 +89,27 @@ POST http://localhost:8082/loan
 Content-Type: application/json
 
 {
-  "user_id": "8953a566-57c6-4dbe-bb18-fdea80310036",
-  "amount": 100
+  "user_id": "4a2574e5-46e8-4ef8-b558-4bb58207c24a",
+  "amount": 1000
 }
 ###
 // Счетчик долгов вывести красиво
 GET http://localhost:8082/loan/fc154435-9d24-42d9-9148-b088b2a52813
+
+
+### Заказать такси
+POST http://localhost:8082/taxi/order
+Content-Type: application/json
+
+{
+  "user_id": "4a2574e5-46e8-4ef8-b558-4bb58207c24a",
+  "from": "Краснаяdsadsa площадь",
+  "to": "Шереметьевоdsadsa",
+  "price": 500
+}
+
+### Статус заказа
+GET http://localhost:8082/taxi/225282e5-49dc-4be5-b606-be808f64bb34
+
+### История заказов пользователя
+GET http://localhost:8082/taxi/history?user_id=4a2574e5-46e8-4ef8-b558-4bb58207c24a

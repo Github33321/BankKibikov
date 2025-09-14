@@ -18,7 +18,8 @@ type Handler struct {
 	AccountHandler *AccountHandler
 	StockHandler   *StockHandler
 	LoanHandler    *LoanHandler
-	ChatHandler    *ChatHandler // ✅ добавили чат
+	ChatHandler    *ChatHandler
+	TaxiHandler    *TaxiHandler
 	jwtSecret      string
 }
 
@@ -29,7 +30,8 @@ func NewHandler(
 	newsRepo *repository.NewsRepository,
 	accountService *service.AccountService,
 	loanService *service.LoanService,
-	chatHub *chat.Hub, // ✅ чат
+	chatHub *chat.Hub,
+	taxiService *service.TaxiService,
 	secret string,
 ) *Handler {
 	return &Handler{
@@ -40,7 +42,8 @@ func NewHandler(
 		AccountHandler: NewAccountHandler(logger, accountService),
 		StockHandler:   NewStockHandler(),
 		LoanHandler:    NewLoanHandler(logger, loanService),
-		ChatHandler:    NewChatHandler(chatHub), // ✅ инициализация
+		ChatHandler:    NewChatHandler(chatHub),
+		TaxiHandler:    NewTaxiHandler(logger, taxiService),
 		jwtSecret:      secret,
 	}
 }
@@ -88,4 +91,8 @@ func (h *Handler) InitRoutes(router *gin.Engine) {
 	// чат
 	router.StaticFile("/chat", "static/chat.html")
 	router.GET("/ws", h.ChatHandler.ServeWs)
+	// такси
+	router.POST("/taxi/order", h.TaxiHandler.OrderTaxi)
+	router.GET("/taxi/:id", h.TaxiHandler.GetOrder)
+	router.GET("/taxi/history", h.TaxiHandler.GetUserOrders)
 }

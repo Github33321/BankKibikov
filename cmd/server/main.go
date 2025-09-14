@@ -82,6 +82,9 @@ func main() {
 	chatHub := chat.NewHub()
 	go chatHub.Run()
 
+	taxiRepo := repository.NewTaxiRepository(pool)
+	taxiService := service.NewTaxiService(taxiRepo, accountService)
+
 	// Хендлеры
 	h := handler.NewHandler(
 		log,
@@ -90,7 +93,8 @@ func main() {
 		newsRepo,
 		accountService,
 		loanService,
-		chatHub, // ✅ прокидываем чат
+		chatHub,
+		taxiService,
 		"",
 	)
 
