@@ -7,9 +7,9 @@ POST http://localhost:8082/users
 Content-Type: application/json
 
 {
-  "username": "max",
+  "username": "max12",
   "password": "12345",
-  "email": "bebebe@example.ru"
+  "email": "bebeb2e@example.ru"
 }
 
 
@@ -18,7 +18,7 @@ POST http://localhost:8082/login
 Content-Type: application/json
 
 {
-  "username": "max",
+  "username": "max12",
   "password": "12345"
 }
 
@@ -28,8 +28,8 @@ POST http://localhost:8082/verify-otp
 Content-Type: application/json
 
 {
-  "username": "max",
-  "otp": "10654755"
+  "username": "max12",
+  "otp": "1531046"
 }
 
 
@@ -46,8 +46,8 @@ POST http://localhost:8082/news
 Content-Type: application/json
 
 {
-  "title": "Bank Kibikov запущен",
-  "content": "bebebeNekitLoh!"
+  "title": "Bank 321321Kibikov запущен",
+  "content": "bebebeN321312ekitLoh!"
 }
 
 ### 3. Баланс  (user_id нужно подставить UUID из ответа на /users или взять из БД)
@@ -55,14 +55,14 @@ GET http://localhost:8082/balance?user_id=8953a566-57c6-4dbe-bb18-fdea80310036
 
 
 ### 4. Баланс
-GET http://localhost:8082/balance?user_id=cdb07b18-8c83-4d3f-9ffd-cf1e90f8efdd
+GET http://localhost:8082/balance?user_id=7994e089-2af2-4f40-994b-e613f82b8b22
 
 ### Пополнение счёта пользователя
 POST http://localhost:8082/deposit
 role: admin
 Content-Type: application/x-www-form-urlencoded
 
-user_id=f939bab8-aa3f-41cf-b971-0e533d2bdbd2&amount=200.00
+user_id=7994e089-2af2-4f40-994b-e613f82b8b22&amount=20012.00
 
 ### Списание со счёта
 POST http://localhost:8082/withdraw
@@ -74,15 +74,15 @@ user_id=1135666f-a2b9-4340-94ac-6c8f77d36062&amount=200.00
 POST http://localhost:8082/transfer
 Content-Type: application/x-www-form-urlencoded
 
-from_user=1135666f-a2b9-4340-94ac-6c8f77d36062&to_user=cdb07b18-8c83-4d3f-9ffd-cf1e90f8efdd&amount=100.50
+from_user=8953a566-57c6-4dbe-bb18-fdea80310036&to_user=7994e089-2af2-4f40-994b-e613f82b8b22&amount=100.50
 
 
 ### 6. Проверка истории транзакций
-GET http://localhost:8082/transactions?user_id=cdb07b18-8c83-4d3f-9ffd-cf1e90f8efdd
+GET http://localhost:8082/transactions?user_id=8953a566-57c6-4dbe-bb18-fdea80310036
 
 
 ### 7. Проверка истории транзакций
-GET http://localhost:8082/transactions?user_id=1135666f-a2b9-4340-94ac-6c8f77d36062
+GET http://localhost:8082/transactions?user_id=7994e089-2af2-4f40-994b-e613f82b8b22
 
 ### 8. Микрозаймы
 POST http://localhost:8082/loan
@@ -90,8 +90,8 @@ Content-Type: application/json
 
 {
   "user_id": "8953a566-57c6-4dbe-bb18-fdea80310036",
-  "amount": 1000
+  "amount": 100
 }
 ###
 // Счетчик долгов вывести красиво
-GET http://localhost:8082/loan/f720a209-3bd7-432b-b89b-ba4c94645a19
+GET http://localhost:8082/loan/fc154435-9d24-42d9-9148-b088b2a52813

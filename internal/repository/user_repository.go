@@ -25,6 +25,12 @@ func (r *UserRepository) Create(ctx context.Context, u *models.User) error {
 	return row.Scan(&u.ID)
 }
 
+func (r *UserRepository) EmailExists(ctx context.Context, email string) (bool, error) {
+	var exists bool
+	err := r.db.QueryRow(ctx, "SELECT EXISTS(SELECT 1 FROM users WHERE email=$1)", email).Scan(&exists)
+	return exists, err
+}
+
 func (r *UserRepository) GetByID(ctx context.Context, id string) (*models.User, error) {
 	row := r.db.QueryRow(ctx,
 		"SELECT id, username, password, created_at FROM users WHERE id = $1", id,
@@ -57,7 +63,8 @@ func (r *UserRepository) GetByUsername(ctx context.Context, username string) (*m
 }
 
 func (r *UserRepository) GetAll(ctx context.Context) ([]models.User, error) {
-	rows, err := r.db.Query(ctx, "SELECT id, username, password, created_at FROM users ORDER BY created_at")
+	rows, err := r.db.Query(ctx,
+		`SELECT id, username, password, email, role, created_at  FROM users ORDER BY created_at`)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +73,7 @@ func (r *UserRepository) GetAll(ctx context.Context) ([]models.User, error) {
 	var users []models.User
 	for rows.Next() {
 		var u models.User
-		if err := rows.Scan(&u.ID, &u.Username, &u.Password, &u.CreatedAt); err != nil {
+		if err := rows.Scan(&u.ID, &u.Username, &u.Password, &u.Email, &u.Role, &u.CreatedAt); err != nil {
 			return nil, err
 		}
 		users = append(users, u)

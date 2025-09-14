@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -32,6 +33,10 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 	}
 
 	if err := h.userService.CreateUser(context.Background(), &u); err != nil {
+		if strings.Contains(err.Error(), "email already in use") {
+			handleClientError(c, h.logger, http.StatusConflict, "email already in use", err)
+			return
+		}
 		handleClientError(c, h.logger, http.StatusInternalServerError, "cannot create user", err)
 		return
 	}

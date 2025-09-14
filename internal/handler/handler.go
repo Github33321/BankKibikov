@@ -54,6 +54,7 @@ func (h *Handler) InitRoutes(router *gin.Engine) {
 		c.JSON(200, gin.H{"status": "ok"})
 	})
 
+	//После jwt добавить в строку /v1
 	secure := router.Group("/")
 	{
 		secure.GET("/balance", h.AccountHandler.GetBalance)
@@ -74,6 +75,7 @@ func (h *Handler) InitRoutes(router *gin.Engine) {
 	router.POST("/login", h.AuthHandler.Login)
 	router.POST("/verify-otp", h.AuthHandler.VerifyOTP)
 	router.GET("/users/:id", h.UserHandler.GetUserByID)
+	//Заглушить в финале (только для разработки)
 	router.GET("/users", h.UserHandler.GetUsers)
 
 	// биржа
@@ -84,6 +86,6 @@ func (h *Handler) InitRoutes(router *gin.Engine) {
 	router.GET("/loan/:id", h.LoanHandler.GetLoan)
 
 	// чат
-	router.StaticFile("/chat", "static/chat.html") // панель чата
-	router.GET("/ws", h.ChatHandler.ServeWs)       // websocket
+	router.StaticFile("/chat", "static/chat.html")
+	router.GET("/ws", h.ChatHandler.ServeWs)
 }

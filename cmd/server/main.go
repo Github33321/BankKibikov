@@ -73,7 +73,7 @@ func main() {
 	// Сервисы
 	userService := service.NewUserService(userRepo, accountRepo)
 	accountService := service.NewAccountService(accountRepo, txRepo)
-	loanService := service.NewLoanService(loanRepo, accountRepo)
+	loanService := service.NewLoanService(loanRepo, accountRepo, txRepo)
 
 	// Security
 	authService := security.NewAuthService(userRepo)

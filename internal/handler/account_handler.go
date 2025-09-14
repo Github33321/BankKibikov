@@ -57,6 +57,7 @@ func (h *AccountHandler) GetTransactions(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, list)
 }
+
 func (h *AccountHandler) Deposit(c *gin.Context) {
 	userID := c.PostForm("user_id")
 	amountStr := c.PostForm("amount")

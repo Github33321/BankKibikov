@@ -4,6 +4,7 @@ import (
 	"BankKibikov/internal/models"
 	"BankKibikov/internal/repository"
 	"context"
+	"errors"
 )
 
 type UserService struct {
@@ -19,6 +20,15 @@ func (s *UserService) CreateUser(ctx context.Context, u *models.User) error {
 	if u.Password == "" {
 		u.Password = "12345"
 	}
+
+	exists, err := s.repo.EmailExists(ctx, u.Email)
+	if err != nil {
+		return err
+	}
+	if exists {
+		return errors.New("email already in use")
+	}
+
 	if err := s.repo.Create(ctx, u); err != nil {
 		return err
 	}
